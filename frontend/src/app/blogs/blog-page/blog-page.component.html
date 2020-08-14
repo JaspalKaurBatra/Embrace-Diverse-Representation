@@ -1,0 +1,9 @@
+<p>blog-page works!</p>
+
+<br/>
+<div>
+    <input ibmText [(ngModel)]="title" placeholder="Blog Title"/>
+    <br/>
+    <textarea ibmTextArea [(ngModel)] ="content" placeholder="Blog Content"></textarea>
+</div>
+<button ibmButton (click)="postBlog()">Post Blog</button>
