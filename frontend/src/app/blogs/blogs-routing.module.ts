@@ -8,8 +8,8 @@ const routes: Routes = [
     component: BlogPageComponent
   },
   {
-    path: '/addBlog',
-    component: AddBlogComponent
+    path: 'blogs',
+    component: BlogPageComponent
   }
 ];
 

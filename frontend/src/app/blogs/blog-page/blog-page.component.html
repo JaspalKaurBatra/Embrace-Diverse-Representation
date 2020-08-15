@@ -13,6 +13,10 @@
 </div>
 <button ibmButton (click)="postBlog()">Post Blog</button>
 
+<div class="loadWrapper" *ngIf="loading">  
+    <div class="loader"></div>  
+</div>
+
 <hr>
 
 <div *ngFor="let blog of blogs">
