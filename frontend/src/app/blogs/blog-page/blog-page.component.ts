@@ -1,9 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { HttpErrorResponse } from '@angular/common/http';
-import { HttpHeaders } from '@angular/common/http';
-import { Observable, forkJoin } from 'rxjs';
-import { ConnectionSignalComponent } from '@carbon/icons-angular';
 
 @Component({
 	selector: 'app-blog-page',
@@ -23,6 +20,7 @@ export class BlogPageComponent implements OnInit {
 	PREDICT_DISRESPECTFUL_URL: string = "";
 	PREDICT_FEARFUL_URL: string = "";
 	PREDICT_HATEFUL_URL: string = "";
+	SAVE_BLOG_URL = "";
 	response =  [];
 	constructor(private httpService: HttpClient) {
 		this.title = "";
@@ -35,14 +33,14 @@ export class BlogPageComponent implements OnInit {
 		this.PREDICT_DISRESPECTFUL_URL="https://callforcode-nice-rabbit.mybluemix.net/api/predict_disrespectful";
 		this.PREDICT_FEARFUL_URL="https://callforcode-nice-rabbit.mybluemix.net/api/predict_fearful";
 		this.PREDICT_HATEFUL_URL="https://callforcode-nice-rabbit.mybluemix.net/api/predict_hateful";
+		this.SAVE_BLOG_URL = "http://localhost:8082/mitigate-algorithmic-bias/blog";
 	 }
 
 	ngOnInit(): void {
 
-		this.httpService.get('./assets/json/blogs.json').subscribe(
+		this.httpService.get(this.SAVE_BLOG_URL).subscribe(
 			data => {
 			  this.blogs = data;	 // FILL THE ARRAY WITH DATA.
-			    console.log(this.blogs[0]);
 			},
 			(err: HttpErrorResponse) => {
 			  console.log (err.message);
@@ -53,8 +51,7 @@ export class BlogPageComponent implements OnInit {
 	async postBlog(){
 		this.invalid = false;
 		this.invalidText = "";
-		//await this.checkBlogContent(this.content);
-		await this.checkBlogContent2(this.content);
+		await this.checkBlogContent(this.content);
 		let invalidMsg = [];
 		let response = this.response;
 		console.log(response);
@@ -87,50 +84,10 @@ export class BlogPageComponent implements OnInit {
 			this.invalid = false;
 			this.saveBlog(this.title, this.content);
 			this.loading = false;
-		}
-		
+		}	
 	}
 
 	checkBlogContent(content){
-		let body = [];
-		this.response = [];
-		body.push(content);
-		this.loading = true;
-		let offensive = this.httpService.post(this.PREDICT_OFFENSIVE_URL, body);
-		let abusive = this.httpService.post(this.PREDICT_ABUSIVE_URL, body);
-		let disrespectful = this.httpService.post(this.PREDICT_DISRESPECTFUL_URL, body);
-		let fearful = this.httpService.post(this.PREDICT_FEARFUL_URL, body);
-		let hateful = this.httpService.post(this.PREDICT_HATEFUL_URL, body);
-		return new Promise((resolve, reject) => {
-			forkJoin([offensive, abusive, disrespectful, fearful, hateful]).subscribe(results => {
-				this.response.push(results[0][0]);
-				this.response.push(results[1][0]);
-				this.response.push(results[2][0]);
-				this.response.push(results[3][0]);
-				this.response.push(results[4][0]);
-				console.log(this.response);
-				this.loading = false;
-				resolve();
-			},
-			error=>{
-				console.log(error);
-				this.loading = false;
-				reject();
-			});
-		});
-		// this.httpService.post(this.PREDICT_FEARFUL_URL, body)
-		// 	.subscribe(data => {
-		// 		console.log(data);
-		// 		this.response.push(data[0]);
-		// });
-		// this.httpService.post(this.PREDICT_HATEFUL_URL, body)
-		// 	.subscribe(data => {
-		// 		console.log(data);
-		// 		this.response.push(data[0]);
-		// });
-	}
-
-	checkBlogContent2(content){
 		let body = [];
 		this.response = [];
 		body.push(content);
@@ -175,19 +132,17 @@ export class BlogPageComponent implements OnInit {
 				console.log(error);
 				reject();
 			})
-
 		});
 	}
 
 	saveBlog(title, content){
-		let newBlog = {id: Math.random() , "title": title, "content": content};
-		this.blogs.push(newBlog);
-		let headers = new Headers({ 'Content-Type': 'application/json' });
-    	let body = JSON.stringify(this.blogs);
-    	let options = { headers: headers };
-    	// this.httpService
-		// 	.post('./assets/json/blogs.json', body).subscribe(	data =>{
-		// 		console.log(data);
-		// 	})
+		let newBlog = { "user": "David Brown", "title": title, "content": content };
+		let body = JSON.stringify(newBlog);
+		let headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+		this.httpService.post(this.SAVE_BLOG_URL, body, {headers, responseType: 'text'}).subscribe(data => {
+			console.log(data);
+		}, error => {
+			console.log(error);
+		});
 	}
 }

@@ -10,10 +10,6 @@ import { HttpClientModule } from '@angular/common/http';
 // carbon-components-angular default imports
 import { UIShellModule } from 'carbon-components-angular';
 
-//import { Notification20Module } from '@carbon/icons-angular';
-//import { UserAvatar20Module } from '@carbon/icons-angular';
-//import { AppSwitcher20Module } from '@carbon/icons-angular';
-
 @NgModule({
   declarations: [
     AppComponent,
@@ -24,10 +20,7 @@ import { UIShellModule } from 'carbon-components-angular';
     AppRoutingModule,
     FormsModule,
     HttpClientModule,
-	  UIShellModule//,
-	//Notification20Module, 
-  //UserAvatar20Module, 
-  //AppSwitcher20Module
+	  UIShellModule
   ],
   bootstrap: [AppComponent]
 })
