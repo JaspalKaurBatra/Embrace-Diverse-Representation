@@ -1,0 +1,27 @@
+<p>blog-page works!</p>
+
+<br/>
+<div>
+    <input ibmText [(ngModel)]="title" placeholder="Blog Title"/>
+    <br/>
+    <ibm-label
+			[invalid]="invalid"
+			[invalidText]="invalidText">
+    <textarea ibmTextArea [(ngModel)] ="content" [invalid]="invalid"
+     placeholder="Blog Content"></textarea>
+    </ibm-label>
+</div>
+<button ibmButton (click)="postBlog()">Post Blog</button>
+
+<div class="loadWrapper" *ngIf="loading">  
+    <div class="loader"></div>  
+</div>
+
+<hr>
+
+<div *ngFor="let blog of blogs">
+    <ibm-clickable-tile target="_blank" >
+        <h6>{{blog.title}}</h6>
+        <p>{{blog.content}}</p>
+    </ibm-clickable-tile>
+</div>
