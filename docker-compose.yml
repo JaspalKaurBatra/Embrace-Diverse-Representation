@@ -1,0 +1,22 @@
+version: "1"
+services:
+
+  frontend:
+    build: frontend/
+    image: frontend:latest
+    container_name: frontend
+    network_mode: "host"
+    hostname: localhost
+    ports:
+      - 4200:4200
+    restart: always
+
+  service:
+    image: mitigate-algorithmic-bias:latest
+    build: service/mitigate-algorithmic-bias/
+    restart: always
+    network_mode: host
+    ports:
+      - 8082:8082
+    expose:
+      - 8082
